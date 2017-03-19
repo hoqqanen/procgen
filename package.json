@@ -1,0 +1,16 @@
+{
+  "name": "procgen",
+  "version": "1.0.0",
+  "description": "Procedural generation library.",
+  "main": "./distribution/index.js",
+  "scripts": {
+    "build": "babel source --presets babel-preset-es2015 --out-dir distribution",
+    "prepublish": "npm run build"
+  },
+  "author": "George Hoqqanen",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-preset-es2015": "^6.24.0"
+  }
+}
