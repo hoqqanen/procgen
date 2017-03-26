@@ -10,4 +10,4 @@ for (var i = 0; i < params.nPaths; i++) {
     var L = new pg.PointList({list: pg.geometry.scale(pg.random.walk2d(params.nSteps), params.stepSize)})
     L.list.forEach(p => pg.renderPoint(p, params.renderer, {radius: 1, color: "#000"}))
 }
-pg.save('randomWalk', fs)
+pg.save('output/randomWalk', fs)

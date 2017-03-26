@@ -1,4 +1,5 @@
 import {cumulativeSum} from '../math'
+import {scale} from '../geometry'
 
 export function rand(low, high) {
     return Math.random() * (high - low) + low
@@ -21,12 +22,11 @@ export function uniformDiscrete(shape, values) {
     return continuous.map(c => values[Math.floor(c)])
 }
 
-export function walk1d(n, step = 1, start = 0) {
-    const steps = uniformDiscrete([n], [-step, step])
-    return cumulativeSum(steps)
+export function walk1d(n, {step = 1, start = 0, stepScale = 1}) {
+    return cumulativeSum([start].concat(uniformDiscrete([n], [-step, step])))
 }
 
-export function walk2d(n, steps = [[-1, 0], [0, -1], [1, 0], [0, 1]], start = [0, 0]) {
-    return cumulativeSum(uniformDiscrete([n], steps))
+export function walk2d(n, {steps = [[-1, 0], [0, -1], [1, 0], [0, 1]], start = [0, 0], stepScale = 1}) {
+    return cumulativeSum([start].concat(uniformDiscrete([n], scale(steps, stepScale))))
 }
 
