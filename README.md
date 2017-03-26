@@ -13,6 +13,31 @@ There are two ways to use ProcGen.js: as a library in the browser or by calling 
 
 To get started with Codepen, all you need to do is open one of the codepen templates (todo: link) or npm install (along with cairo dependencies, see the node canvas guide) and run the example file.
 
+## Development Setup
+Install homebrew and node
+```
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew install node
+```
+
+Install dependencies for node canvas (see https://github.com/Automattic/node-canvas). For OSX:
+```
+brew install pkg-config cairo pango libpng jpeg giflib
+```
+
+Clone procgen
+```
+cd ~/Documents
+git clone https://github.com/hoqqanen/procgen.git
+```
+
+Install procgen dependencies and build
+```
+cd procgen
+npm install
+npm run build
+```
+
 ## FAQ
 
 1. **Can I sell art made with ProcGen?**
