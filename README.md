@@ -13,7 +13,7 @@ There are two ways to use ProcGen.js: as a library in the browser or by calling 
 
 To get started with Codepen, all you need to do is open one of the codepen templates (todo: link) or npm install (along with cairo dependencies, see the node canvas guide) and run the example file.
 
-# FAQ
+## FAQ
 
 1. **Can I sell art made with ProcGen?**
 
@@ -23,9 +23,7 @@ Yes. You own everything you make with ProcGen.js.
 
 No, again you own everything you make. We'd love if you contributed it, but that's your choice.
 
-
-
-What ProcGen.js is _not_:
+## What ProcGen.js is _not_:
   - it is not a generic javascript canvas library
   - it is not a game engine (despite containing animation and interaction primitives)
   - it is probably not a data visualization library, you'll likely do better with d3
