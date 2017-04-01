@@ -7,7 +7,8 @@ export default class Palette {
             this.probs = [1]
         } else if (colorList) {
             this.colorList = colorList
-            this.probs = probs || Array(colorList.length).fill(1/colorList.length)
+            // If we have no probs we assume a uniform distribution. See next()
+            this.probs = probs || null
         } else {
             throw {
                 message: "Insufficient arguments to construct a palette",
