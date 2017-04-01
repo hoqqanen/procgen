@@ -10,7 +10,10 @@ export default class PointList {
                 this.list.push(policy(i, this.list));
             }
         } else {
-            throw "Invalid point list constructor arguments"
+            throw {
+                message: "Invalid point list constructor arguments", 
+                args: arguments
+            }
         }
     }
 
@@ -20,6 +23,18 @@ export default class PointList {
             if (policy(e, i, this)) {
                 newList.push(e)
             }
+        })
+        this.list = newList
+    }
+
+    update(updateFn) {
+        this.list = updateFn(this.list)
+    }
+
+    mapUpdate(updatePoint) {
+        var newList = []
+        this.list.forEach((e, i) => {
+            newList.push(updatePoint(e, i, this.list))
         })
         this.list = newList
     }

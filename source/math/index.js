@@ -20,16 +20,3 @@ export function cumulativeSum(values) {
     })
     return r
 }
-
-/**
- * Samples from a discrete probability distribution
- * @param {[number]} pList 
- */
-export function sample(pList) {
-    const cumulativeP = cumulativeSum(pList)
-    if (cumulativeP[cumulativeP.length - 1] != 1) {
-        throw "Probability distribution to sample from doesn't sum to 1."
-    }
-    const draw = Math.random()
-    return cumulativeP.indexOf(cumulativeP.find(x => x > draw))
-}

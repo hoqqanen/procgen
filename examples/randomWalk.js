@@ -1,13 +1,14 @@
 // To run: `node examples/randomWalk.js` from the root directory
 var fs = require('fs')
 var Canvas = require('canvas')
-var procgen = require('..')
 var canvas = new Canvas(1000, 1000)
-var pg = procgen(canvas)
+var pg = require('..')(canvas)
 pg.fillBackground("#FFF")
-var params = {nPaths: 10, nSteps: 5000, stepSize: 1/200, renderer: pg.renderers.circle}
+const colors = ["#005C09","#00680A","#007B0C","#018E0E","#01A611","#005C09","#00680A","#007B0C"]
+pg.setPalette(new pg.Palette({colorList: colors}))
+var params = {nPaths: 10, nSteps: 10000, stepSize: 1/100, renderer: pg.renderers.circle}
 for (var i = 0; i < params.nPaths; i++) {
-    var L = new pg.PointList({list: pg.geometry.scale(pg.random.walk2d(params.nSteps), params.stepSize)})
-    L.list.forEach(p => pg.renderPoint(p, params.renderer, {radius: 1, color: "#000"}))
+    var L = new pg.PointList({list: pg.random.walk2d(params.nSteps, {stepScale: params.stepSize})})
+    L.list.forEach(p => pg.renderPoint(p, params.renderer, {radius: 3}))
 }
 pg.save('output/randomWalk', fs)
