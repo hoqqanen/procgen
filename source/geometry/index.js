@@ -1,7 +1,11 @@
 
 /* Takes an angle in radians and returns a point on the unit circle at that angle */
-export function toCircle(theta) {
-    return [Math.cos(theta), Math.sin(theta)];
+export function toCircle(theta, r = 1) { // rename polarToCartesian?
+    return [r * Math.cos(theta), r * Math.sin(theta)];
+}
+
+export function circlePoints(n, r) {
+    return Array(n).fill(1).map((_, i) => toCircle(2 * Math.PI * i/n, r));
 }
 
 export function degToRad(theta) {

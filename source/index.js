@@ -2,8 +2,8 @@ import * as geometry from './geometry';
 import * as random from './random';
 import * as renderers from './renderers';
 import Palette from './Palette';
+import Point from './Point';
 import PointList from './PointList';
-import * as utils from './utils';
 
 module.exports = function(canvas, bgColor = "#FFF") {
   var ctx =  canvas.getContext("2d")
@@ -17,7 +17,7 @@ module.exports = function(canvas, bgColor = "#FFF") {
       this.defaultPalette = p
     },
     renderPoint: function(point, render, data) {
-      data.point = utils.canonicalizePoint(point, canvas)
+      data.point = point.toCanvasCoordinates(canvas)
       data.color = data.color || this.defaultPalette.next()
       render(ctx, data)
     },
@@ -37,6 +37,7 @@ module.exports = function(canvas, bgColor = "#FFF") {
     geometry: geometry,
     random: random,
     renderers: renderers,
+    Point: Point,
     PointList: PointList,
     Palette: Palette,
   };
