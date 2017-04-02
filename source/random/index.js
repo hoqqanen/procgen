@@ -11,6 +11,7 @@ export function rand(low, high) {
  * @param {[number]} pList 
  */
 export function sample(pList) {
+    // TODO: More efficient implementation.
     const cumulativeP = cumulativeSum(pList)
     const normalizer = cumulativeP[cumulativeP.length - 1]
     const distribution = cumulativeP.map(x => x/normalizer)
@@ -38,15 +39,16 @@ export function uniform(shape, low = -1, high = 1) {
     }
 }
 
-export function uniformDiscrete(shape, values) {
-    const continuous = uniform(shape, 0, values.length)
+export function uniformDiscrete(n, values) {
+    // TODO: Support other shapes
+    const continuous = uniform([n], 0, values.length)
     return continuous.map(c => values[Math.floor(c)])
 }
 
 export function walk1d(n, {step = 1, start = 0, stepScale = 1}) {
-    return cumulativeSum([start].concat(uniformDiscrete([n], [-step, step])))
+    return cumulativeSum([start].concat(uniformDiscrete(n, [-step, step])))
 }
 
 export function walk2d(n, {steps = [[-1, 0], [0, -1], [1, 0], [0, 1]], start = [0, 0], stepScale = 1}) {
-    return cumulativeSum([start].concat(uniformDiscrete([n], scale(steps, stepScale))))
+    return cumulativeSum([start].concat(uniformDiscrete(n, scale(steps, stepScale))))
 }
