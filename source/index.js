@@ -7,10 +7,17 @@ import PointList from './PointList';
 
 module.exports = function(canvas, bgColor = "#FFF") {
   var ctx =  canvas.getContext("2d")
+  var encoder;
   return {
     save: (name, fs) => {
-      // This only makes sense while using node canvas
-      canvas.createPNGStream().pipe(fs.createWriteStream(name + ".png"))
+      if (encoder) {
+        encoder.createReadStream().pipe(fs.createWriteStream(name + '.gif'))
+        encoder.finish()
+        encoder = undefined
+      } else {
+        // This only makes sense while using node canvas
+        canvas.createPNGStream().pipe(fs.createWriteStream(name + ".png"))
+      }
     },
     defaultPalette: new Palette({color: "#000"}),
     setPalette: function(p) {
@@ -32,6 +39,16 @@ module.exports = function(canvas, bgColor = "#FFF") {
       this.fillBackground(this.bgColor);
     },
     ctx: ctx,
+    animate: function(GIFEncoder, opts) {
+      opts = opts || {}
+      encoder = new GIFEncoder(canvas.width, canvas.height)
+      encoder.setRepeat(opts.repeat === undefined ? -1 : opts.repeat);
+      encoder.setDelay(opts.delay || 16); // 60fps
+      encoder.start()
+    },
+    frame: function() {
+      encoder.addFrame(ctx)
+    },
 
     // Library exports
     geometry: geometry,

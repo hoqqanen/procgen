@@ -1,12 +1,15 @@
 var fs = require('fs')
 var Canvas = require('canvas')
 var canvas = new Canvas(800, 800)
+var GIFEncoder = require('gifencoder')
 var pg = require('..')(canvas)
 pg.fillBackground("#FFF")
 
+pg.animate(GIFEncoder)
+
 var params = {nP: 36, nSteps: 400,
     renderer: pg.renderers.circle, nSpawn: 2, neighborDistance: .01, 
-    forceRatio: 1000, pointRadius: .5, stepSize: .002, spawnCap: 2}
+    forceRatio: 1000, pointRadius: .5, stepSize: .002, spawnCap: 2, stepsPerFrame: 5}
 var pts = pg.geometry.circlePoints(params.nP, .15).map(pg.Point.fromList);
 
 function neighborForce(p, q) {
@@ -50,5 +53,8 @@ var L = new pg.PointList({list: pts})
 for (var i = 0; i < params.nSteps; i++) {
     L.points.forEach(p => pg.renderPoint(p, params.renderer, {radius: params.pointRadius}))
     L.update(grow)
+    if (i % params.stepsPerFrame === 0) {
+        pg.frame()
+    }
 }
 pg.save('output/grow', fs)
