@@ -38,6 +38,10 @@ npm install
 npm run build
 ```
 
+## Bundling for the Web
+
+One of the reasons procgen is in javascript is ultimately we want it to be shareable on the web at places like codepen. To build a bundle off of dev, just run `npm run bundle`. This will give you a script that when included defines `procgen` on the Window identical to the function built in the distribution. Proceed by calling it on a canvas element (todo: make it work without an argument by injecting a canvas that matches the dimensions of the page).
+
 ## FAQ
 
 1. **Can I sell art made with ProcGen?**
