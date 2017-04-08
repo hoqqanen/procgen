@@ -56,7 +56,7 @@ module.exports = function(canvas, bgColor = "#FFF") {
       var data = imageData.data
       var newData = ctx.createImageData(W, H);
       for (var i = 0; i < L; i += 4) {
-        var isBoundary = i < W || i > L - W || i % (4*W) === 0 || i % (4*W) === 4*W - 1
+        var isBoundary = i < 4*W || i > L - 4*W || i % (4*W) === 0 || i % (4*W) === 4*W - 1
         var v = s(data, i, W, H, isBoundary)
         newData.data[i] = v[0]
         newData.data[i+1] = v[1]
