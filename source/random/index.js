@@ -39,6 +39,10 @@ export function uniform(shape, low = -1, high = 1) {
     }
 }
 
+export function uint8() {
+  return Math.floor(Math.random()*256);
+}
+
 export function uniformDiscrete(n, values) {
     // TODO: Support other shapes
     const continuous = uniform([n], 0, values.length)

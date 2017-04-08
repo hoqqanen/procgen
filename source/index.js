@@ -8,6 +8,7 @@ import PointList from './PointList';
 module.exports = function(canvas, bgColor = "#FFF") {
   var ctx =  canvas.getContext("2d")
   var encoder;
+  var imageData = ctx.getImageData(0,0, canvas.width, canvas.height);
   return {
     save: (name, fs) => {
       if (encoder) {
@@ -39,15 +40,31 @@ module.exports = function(canvas, bgColor = "#FFF") {
       this.fillBackground(this.bgColor);
     },
     ctx: ctx,
-    animate: function(GIFEncoder, opts) {
-      opts = opts || {}
+    animate: function(GIFEncoder, {repeat = -1, delay = 16 /*60 fps*/}) {
       encoder = new GIFEncoder(canvas.width, canvas.height)
-      encoder.setRepeat(opts.repeat === undefined ? -1 : opts.repeat);
-      encoder.setDelay(opts.delay || 16); // 60fps
+      encoder.setRepeat(repeat);
+      encoder.setDelay(delay);
       encoder.start()
     },
     frame: function() {
       encoder.addFrame(ctx)
+    },
+    runShader: function(s) {
+      const W = canvas.width
+      const H = canvas.height
+      var L = imageData.data.length
+      var data = imageData.data
+      var newData = ctx.createImageData(W, H);
+      for (var i = 0; i < L; i += 4) {
+        var isBoundary = i < W || i > L - W || i % (4*W) === 0 || i % (4*W) === 4*W - 1
+        var v = s(data, i, W, H, isBoundary)
+        newData.data[i] = v[0]
+        newData.data[i+1] = v[1]
+        newData.data[i+2] = v[2]
+        newData.data[i+3] = v[3]
+      }
+      imageData.data.set(newData.data)
+      ctx.putImageData(imageData, 0, 0);
     },
 
     // Library exports

@@ -5,7 +5,7 @@ var GIFEncoder = require('gifencoder')
 var pg = require('..')(canvas)
 pg.fillBackground("#FFF")
 
-pg.animate(GIFEncoder)
+pg.animate(GIFEncoder, {})
 
 var params = {nP: 36, nSteps: 400,
     renderer: pg.renderers.circle, nSpawn: 2, neighborDistance: .01, 
