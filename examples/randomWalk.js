@@ -12,9 +12,20 @@ function stepFunc() {
 }
 
 pg.setPalette(new pg.Palette({colorFunc: pg.Palette.randGray}))
-var params = {nPaths: 10, nSteps: 5000, stepSize: 1/100, renderer: pg.renderers.circle}
+pg.setPalette(new pg.Palette({color: "$000"}))
+
+var params = {nPaths: 10, nSteps: 100, stepSize: 1/10, renderer: pg.renderers.line}
 for (var i = 0; i < params.nPaths; i++) {
     var L = new pg.PointList({list: pg.random.walk2d(params.nSteps, {stepScale: params.stepSize, stepFunc: stepFunc})})
-    L.points.forEach(p => pg.renderPoint(p, params.renderer, function(p){ return {radius: 3/(.4 + 3*p.norm())}}))
+    var points = L.points
+    points.forEach(function(p, i) {
+        if (i+1 < points.length) {
+            pg.renderPoints(
+                [p, points[i+1]], 
+                params.renderer, 
+                {}
+            )
+        }
+    })
 }
 pg.save('output/randomWalk', fs)
