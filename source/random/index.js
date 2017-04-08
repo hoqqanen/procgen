@@ -53,6 +53,11 @@ export function walk1d(n, {step = 1, start = 0, stepScale = 1}) {
     return cumulativeSum([start].concat(uniformDiscrete(n, [-step, step])))
 }
 
-export function walk2d(n, {steps = [[-1, 0], [0, -1], [1, 0], [0, 1]], start = [0, 0], stepScale = 1}) {
-    return cumulativeSum([start].concat(uniformDiscrete(n, scale(steps, stepScale))))
+export function walk2d(n, {steps = [[-1, 0], [0, -1], [1, 0], [0, 1]], start = [0, 0], stepScale = 1, stepFunc}) {
+    if (stepFunc) {
+        var customSteps = Array(n).fill(1).map(_ => scale(stepFunc(), stepScale))
+        return cumulativeSum([start].concat(customSteps))
+    } else {
+        return cumulativeSum([start].concat(uniformDiscrete(n, scale(steps, stepScale))))        
+    }
 }
