@@ -25,8 +25,11 @@ module.exports = function(canvas, bgColor = "#FFF") {
       this.defaultPalette = p
     },
     renderPoint: function(point, render, data) {
-      var d = typeof data === "function" ? data(point) : data
-      d.point = point.toCanvasCoordinates(canvas)
+      this.renderPoints([point], render, data)
+    },
+    renderPoints: function(points, render, data) {
+      var d = typeof data === "function" ? data(points) : data
+      d.points = points.map(p => p.toCanvasCoordinates(canvas))
       d.color = d.color || this.defaultPalette.next()
       render(ctx, d)
     },
