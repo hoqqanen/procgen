@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _random = require("../random");
+var _random = require('../random');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -15,7 +15,8 @@ var Palette = function () {
     function Palette(_ref) {
         var colorList = _ref.colorList,
             probs = _ref.probs,
-            color = _ref.color;
+            color = _ref.color,
+            colorFunc = _ref.colorFunc;
 
         _classCallCheck(this, Palette);
 
@@ -26,6 +27,8 @@ var Palette = function () {
             this.colorList = colorList;
             // If we have no probs we assume a uniform distribution. See next()
             this.probs = probs || null;
+        } else if (colorFunc) {
+            this.next = colorFunc;
         } else {
             throw {
                 message: "Insufficient arguments to construct a palette",
@@ -35,7 +38,7 @@ var Palette = function () {
     }
 
     _createClass(Palette, [{
-        key: "next",
+        key: 'next',
         value: function next() {
             if (this.probs) {
                 return this.colorList[(0, _random.sample)(this.probs)];
@@ -44,10 +47,20 @@ var Palette = function () {
             }
         }
     }, {
-        key: "get",
+        key: 'get',
         value: function get(x) {
             // maps [0, 1] to the color space
             return null;
+        }
+
+        // TODO: This should be on Color which should be a full-fledged color class
+
+    }], [{
+        key: 'randGray',
+        value: function randGray() {
+            var value = Math.random() * 0xFF | 0;
+            var grayscale = value << 16 | value << 8 | value;
+            return '#' + grayscale.toString(16);
         }
     }]);
 
@@ -358,9 +371,15 @@ module.exports = function (canvas) {
       this.defaultPalette = p;
     },
     renderPoint: function renderPoint(point, render, data) {
-      data.point = point.toCanvasCoordinates(canvas);
-      data.color = data.color || this.defaultPalette.next();
-      render(ctx, data);
+      this.renderPoints([point], render, data);
+    },
+    renderPoints: function renderPoints(points, render, data) {
+      var d = typeof data === "function" ? data(points) : data;
+      d.points = points.map(function (p) {
+        return p.toCanvasCoordinates(canvas);
+      });
+      d.color = d.color || this.defaultPalette.next();
+      render(ctx, d);
     },
     fillBackground: function fillBackground(color) {
       ctx.fillStyle = color;
@@ -541,9 +560,17 @@ function walk2d(n, _ref2) {
         _ref2$start = _ref2.start,
         start = _ref2$start === undefined ? [0, 0] : _ref2$start,
         _ref2$stepScale = _ref2.stepScale,
-        stepScale = _ref2$stepScale === undefined ? 1 : _ref2$stepScale;
+        stepScale = _ref2$stepScale === undefined ? 1 : _ref2$stepScale,
+        stepFunc = _ref2.stepFunc;
 
-    return (0, _math.cumulativeSum)([start].concat(uniformDiscrete(n, (0, _geometry.scale)(steps, stepScale))));
+    if (stepFunc) {
+        var customSteps = Array(n).fill(1).map(function (_) {
+            return (0, _geometry.scale)(stepFunc(), stepScale);
+        });
+        return (0, _math.cumulativeSum)([start].concat(customSteps));
+    } else {
+        return (0, _math.cumulativeSum)([start].concat(uniformDiscrete(n, (0, _geometry.scale)(steps, stepScale))));
+    }
 }
 
 },{"../geometry":5,"../math":7}],9:[function(require,module,exports){
@@ -553,19 +580,32 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.circle = circle;
+exports.line = line;
 function circle(ctx, _ref) {
-    var _ref$point = _ref.point,
-        x = _ref$point.x,
-        y = _ref$point.y,
+    var points = _ref.points,
         _ref$radius = _ref.radius,
         radius = _ref$radius === undefined ? 1 : _ref$radius,
         _ref$color = _ref.color,
         color = _ref$color === undefined ? "#000" : _ref$color;
 
+    // assert there is only one point?
     ctx.beginPath();
-    ctx.arc(x, y, radius, 0, 2 * Math.PI);
+    ctx.arc(points[0].x, points[0].y, radius, 0, 2 * Math.PI);
     ctx.fillStyle = color;
     ctx.fill();
+}
+
+function line(ctx, _ref2) {
+    var points = _ref2.points,
+        _ref2$color = _ref2.color,
+        color = _ref2$color === undefined ? "#000" : _ref2$color;
+
+    // assert there are only two points?
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    ctx.lineTo(points[1].x, points[1].y);
+    ctx.strokeStyle = color;
+    ctx.stroke();
 }
 
 },{}]},{},[4]);
